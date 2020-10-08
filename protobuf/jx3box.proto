@@ -8,19 +8,13 @@ package jx3box;
 service JX3Box {
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
-  rpc UserRename (UserRenameParams) returns (User) {}
+  rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
 }
 
 // The request message containing the user's name.
 message UserQueryParams {
   uint64 uid = 1;
 }
-
-message UserRenameParams {
-  uint64 uid = 1;
-  string displayName = 2;
-}
-
 
 
 // The response message containing the greetings
@@ -29,4 +23,19 @@ message User {
   int32 status = 2;
   uint64 group = 3;
   string displayName = 4;
+}
+
+message UserRenameParams {
+  uint64 uid = 1;
+  string displayName = 2;
+}
+
+message UserRenameResult {
+  uint64 id = 1;
+  uint64 group = 2;
+  string displayName = 3;
+  int32 effect =  4; //受影响的条数
+  int32 code = 5; //结果是否成功 0　成功,其他失败
+  string msg = 6; // 失败原因
+
 }
