@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 type JX3BoxClient interface {
 	// 获取用户
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
-	UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*User, error)
+	UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error)
 }
 
 type jX3BoxClient struct {
@@ -47,8 +47,8 @@ var jX3BoxUserRenameStreamDesc = &grpc.StreamDesc{
 	StreamName: "UserRename",
 }
 
-func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
+func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error) {
+	out := new(UserRenameResult)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/UserRename", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,7 @@ func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opt
 type JX3BoxService struct {
 	// 获取用户
 	GetUser    func(context.Context, *UserQueryParams) (*User, error)
-	UserRename func(context.Context, *UserRenameParams) (*User, error)
+	UserRename func(context.Context, *UserRenameParams) (*UserRenameResult, error)
 }
 
 func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -110,7 +110,7 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 		}
 	}
 	if srvCopy.UserRename == nil {
-		srvCopy.UserRename = func(context.Context, *UserRenameParams) (*User, error) {
+		srvCopy.UserRename = func(context.Context, *UserRenameParams) (*UserRenameResult, error) {
 			return nil, status.Errorf(codes.Unimplemented, "method UserRename not implemented")
 		}
 	}
