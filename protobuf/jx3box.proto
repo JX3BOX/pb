@@ -8,7 +8,10 @@ package jx3box;
 service JX3Box {
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
+  // 用户重命名
   rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
+  // 获取文章
+  rpc GetPosts (PostsQueryParams) returns (PostsQueryResult) {}
 }
 
 // The request message containing the user's name.
@@ -38,5 +41,14 @@ message UserRenameResult {
   int32 effect =  4; //受影响的条数
   int32 code = 5; //结果是否成功 0　成功,其他失败
   string msg = 6; // 失败原因
+}
 
+message PostsQueryParams {
+  uint64 id = 1;
+  string category = 2;
+}
+
+message PostsQueryResult{
+  uint64 authorId = 1;
+  string authorName = 2;
 }

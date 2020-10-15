@@ -19,7 +19,10 @@ const _ = grpc.SupportPackageIsVersion7
 type JX3BoxClient interface {
 	// 获取用户
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
+	// 用户重命名
 	UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error)
+	// 获取文章
+	GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error)
 }
 
 type jX3BoxClient struct {
@@ -56,14 +59,30 @@ func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opt
 	return out, nil
 }
 
+var jX3BoxGetPostsStreamDesc = &grpc.StreamDesc{
+	StreamName: "GetPosts",
+}
+
+func (c *jX3BoxClient) GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error) {
+	out := new(PostsQueryResult)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetPosts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JX3BoxService is the service API for JX3Box service.
 // Fields should be assigned to their respective handler implementations only before
 // RegisterJX3BoxService is called.  Any unassigned fields will result in the
 // handler for that method returning an Unimplemented error.
 type JX3BoxService struct {
 	// 获取用户
-	GetUser    func(context.Context, *UserQueryParams) (*User, error)
+	GetUser func(context.Context, *UserQueryParams) (*User, error)
+	// 用户重命名
 	UserRename func(context.Context, *UserRenameParams) (*UserRenameResult, error)
+	// 获取文章
+	GetPosts func(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
 }
 
 func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -100,6 +119,23 @@ func (s *JX3BoxService) userRename(_ interface{}, ctx context.Context, dec func(
 	}
 	return interceptor(ctx, in, info, handler)
 }
+func (s *JX3BoxService) getPosts(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PostsQueryParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.GetPosts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3Box/GetPosts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.GetPosts(ctx, req.(*PostsQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 // RegisterJX3BoxService registers a service implementation with a gRPC server.
 func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
@@ -114,6 +150,11 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			return nil, status.Errorf(codes.Unimplemented, "method UserRename not implemented")
 		}
 	}
+	if srvCopy.GetPosts == nil {
+		srvCopy.GetPosts = func(context.Context, *PostsQueryParams) (*PostsQueryResult, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
+		}
+	}
 	sd := grpc.ServiceDesc{
 		ServiceName: "jx3box.JX3Box",
 		Methods: []grpc.MethodDesc{
@@ -124,6 +165,10 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "UserRename",
 				Handler:    srvCopy.userRename,
+			},
+			{
+				MethodName: "GetPosts",
+				Handler:    srvCopy.getPosts,
 			},
 		},
 		Streams:  []grpc.StreamDesc{},
