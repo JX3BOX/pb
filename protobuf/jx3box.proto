@@ -23,6 +23,7 @@ message User {
   int32 status = 2;
   uint64 group = 3;
   string displayName = 4;
+  string wechatUnionId = 5;
 }
 
 message UserRenameParams {
