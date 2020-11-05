@@ -2,7 +2,7 @@ syntax = "proto3";
 // jx3box 微服务
 
 option go_package = "service/jx3box";
-
+import "google/protobuf/empty.proto";
 package jx3box;
 
 service JX3Box {
@@ -51,4 +51,19 @@ message PostsQueryParams {
 message PostsQueryResult{
   uint64 authorId = 1;
   string authorName = 2;
+}
+
+// 消息通知
+service JX3BoxMessage{
+  // 发送一个通知
+  rpc Send(NotifyMessage) returns (google.protobuf.Empty) {}
+}
+// 消息通知
+message NotifyMessage{
+  uint64 accessUserId = 1;
+  uint64 sourceId = 2;
+  string sourceType = 3;
+  string type = 4;
+  string subtype = 5;
+  string content = 6;
 }
