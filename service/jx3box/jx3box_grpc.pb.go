@@ -4,6 +4,7 @@ package jx3box
 
 import (
 	context "context"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -169,6 +170,85 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "GetPosts",
 				Handler:    srvCopy.getPosts,
+			},
+		},
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "protobuf/jx3box.proto",
+	}
+
+	s.RegisterService(&sd, nil)
+}
+
+// JX3BoxMessageClient is the client API for JX3BoxMessage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type JX3BoxMessageClient interface {
+	// 发送一个通知
+	Send(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*empty.Empty, error)
+}
+
+type jX3BoxMessageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewJX3BoxMessageClient(cc grpc.ClientConnInterface) JX3BoxMessageClient {
+	return &jX3BoxMessageClient{cc}
+}
+
+var jX3BoxMessageSendStreamDesc = &grpc.StreamDesc{
+	StreamName: "Send",
+}
+
+func (c *jX3BoxMessageClient) Send(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3BoxMessage/Send", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// JX3BoxMessageService is the service API for JX3BoxMessage service.
+// Fields should be assigned to their respective handler implementations only before
+// RegisterJX3BoxMessageService is called.  Any unassigned fields will result in the
+// handler for that method returning an Unimplemented error.
+type JX3BoxMessageService struct {
+	// 发送一个通知
+	Send func(context.Context, *NotifyMessage) (*empty.Empty, error)
+}
+
+func (s *JX3BoxMessageService) send(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotifyMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.Send(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3BoxMessage/Send",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.Send(ctx, req.(*NotifyMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// RegisterJX3BoxMessageService registers a service implementation with a gRPC server.
+func RegisterJX3BoxMessageService(s grpc.ServiceRegistrar, srv *JX3BoxMessageService) {
+	srvCopy := *srv
+	if srvCopy.Send == nil {
+		srvCopy.Send = func(context.Context, *NotifyMessage) (*empty.Empty, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method Send not implemented")
+		}
+	}
+	sd := grpc.ServiceDesc{
+		ServiceName: "jx3box.JX3BoxMessage",
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "Send",
+				Handler:    srvCopy.send,
 			},
 		},
 		Streams:  []grpc.StreamDesc{},
