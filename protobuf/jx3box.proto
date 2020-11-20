@@ -2,7 +2,6 @@ syntax = "proto3";
 // jx3box 微服务
 
 option go_package = "service/jx3box";
-import "google/protobuf/empty.proto";
 package jx3box;
 
 service JX3Box {
@@ -14,7 +13,7 @@ service JX3Box {
   rpc GetPosts (PostsQueryParams) returns (PostsQueryResult) {}
 
   // 发送一个通知
-  rpc SendNotify(NotifyMessage) returns (google.protobuf.Empty) {}
+  rpc SendNotify(NotifyMessage) returns (Empty) {}
 }
 
 // The request message containing the user's name.
@@ -65,3 +64,5 @@ message NotifyMessage{
   string subtype = 5;
   string content = 6;
 }
+
+message Empty {}

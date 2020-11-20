@@ -4,7 +4,6 @@ package jx3box
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,7 +24,7 @@ type JX3BoxClient interface {
 	// 获取文章
 	GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error)
 	// 发送一个通知
-	SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*empty.Empty, error)
+	SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type jX3BoxClient struct {
@@ -79,8 +78,8 @@ var jX3BoxSendNotifyStreamDesc = &grpc.StreamDesc{
 	StreamName: "SendNotify",
 }
 
-func (c *jX3BoxClient) SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *jX3BoxClient) SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/SendNotify", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -100,7 +99,7 @@ type JX3BoxService struct {
 	// 获取文章
 	GetPosts func(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
 	// 发送一个通知
-	SendNotify func(context.Context, *NotifyMessage) (*empty.Empty, error)
+	SendNotify func(context.Context, *NotifyMessage) (*Empty, error)
 }
 
 func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -191,7 +190,7 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 		}
 	}
 	if srvCopy.SendNotify == nil {
-		srvCopy.SendNotify = func(context.Context, *NotifyMessage) (*empty.Empty, error) {
+		srvCopy.SendNotify = func(context.Context, *NotifyMessage) (*Empty, error) {
 			return nil, status.Errorf(codes.Unimplemented, "method SendNotify not implemented")
 		}
 	}
