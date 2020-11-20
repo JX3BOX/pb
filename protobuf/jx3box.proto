@@ -12,6 +12,9 @@ service JX3Box {
   rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
   // 获取文章
   rpc GetPosts (PostsQueryParams) returns (PostsQueryResult) {}
+
+  // 发送一个通知
+  rpc SendNotify(NotifyMessage) returns (google.protobuf.Empty) {}
 }
 
 // The request message containing the user's name.
@@ -53,11 +56,6 @@ message PostsQueryResult{
   string authorName = 2;
 }
 
-// 消息通知
-service JX3BoxMessage{
-  // 发送一个通知
-  rpc Send(NotifyMessage) returns (google.protobuf.Empty) {}
-}
 // 消息通知
 message NotifyMessage{
   uint64 accessUserId = 1;
