@@ -25,6 +25,10 @@ type JX3BoxClient interface {
 	GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error)
 	// 发送一个通知
 	SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*Empty, error)
+	// Send Email To UserID
+	SendEmailToUserID(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error)
+	// send Email to mailbox
+	SendEmailToMailbox(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type jX3BoxClient struct {
@@ -87,6 +91,32 @@ func (c *jX3BoxClient) SendNotify(ctx context.Context, in *NotifyMessage, opts .
 	return out, nil
 }
 
+var jX3BoxSendEmailToUserIDStreamDesc = &grpc.StreamDesc{
+	StreamName: "SendEmailToUserID",
+}
+
+func (c *jX3BoxClient) SendEmailToUserID(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/SendEmailToUserID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+var jX3BoxSendEmailToMailboxStreamDesc = &grpc.StreamDesc{
+	StreamName: "SendEmailToMailbox",
+}
+
+func (c *jX3BoxClient) SendEmailToMailbox(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/SendEmailToMailbox", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JX3BoxService is the service API for JX3Box service.
 // Fields should be assigned to their respective handler implementations only before
 // RegisterJX3BoxService is called.  Any unassigned fields will result in the
@@ -100,6 +130,10 @@ type JX3BoxService struct {
 	GetPosts func(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
 	// 发送一个通知
 	SendNotify func(context.Context, *NotifyMessage) (*Empty, error)
+	// Send Email To UserID
+	SendEmailToUserID func(context.Context, *EmailMessage) (*Empty, error)
+	// send Email to mailbox
+	SendEmailToMailbox func(context.Context, *EmailMessage) (*Empty, error)
 }
 
 func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -170,6 +204,40 @@ func (s *JX3BoxService) sendNotify(_ interface{}, ctx context.Context, dec func(
 	}
 	return interceptor(ctx, in, info, handler)
 }
+func (s *JX3BoxService) sendEmailToUserID(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmailMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.SendEmailToUserID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3Box/SendEmailToUserID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.SendEmailToUserID(ctx, req.(*EmailMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *JX3BoxService) sendEmailToMailbox(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmailMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.SendEmailToMailbox(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3Box/SendEmailToMailbox",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.SendEmailToMailbox(ctx, req.(*EmailMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 // RegisterJX3BoxService registers a service implementation with a gRPC server.
 func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
@@ -194,6 +262,16 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			return nil, status.Errorf(codes.Unimplemented, "method SendNotify not implemented")
 		}
 	}
+	if srvCopy.SendEmailToUserID == nil {
+		srvCopy.SendEmailToUserID = func(context.Context, *EmailMessage) (*Empty, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method SendEmailToUserID not implemented")
+		}
+	}
+	if srvCopy.SendEmailToMailbox == nil {
+		srvCopy.SendEmailToMailbox = func(context.Context, *EmailMessage) (*Empty, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method SendEmailToMailbox not implemented")
+		}
+	}
 	sd := grpc.ServiceDesc{
 		ServiceName: "jx3box.JX3Box",
 		Methods: []grpc.MethodDesc{
@@ -212,6 +290,14 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "SendNotify",
 				Handler:    srvCopy.sendNotify,
+			},
+			{
+				MethodName: "SendEmailToUserID",
+				Handler:    srvCopy.sendEmailToUserID,
+			},
+			{
+				MethodName: "SendEmailToMailbox",
+				Handler:    srvCopy.sendEmailToMailbox,
 			},
 		},
 		Streams:  []grpc.StreamDesc{},

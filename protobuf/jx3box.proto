@@ -14,6 +14,12 @@ service JX3Box {
 
   // 发送一个通知
   rpc SendNotify(NotifyMessage) returns (Empty) {}
+
+  // Send Email To UserID
+  rpc SendEmailToUserID (EmailMessage) returns (Empty) {}
+
+  // send Email to mailbox
+  rpc SendEmailToMailbox (EmailMessage) returns (Empty) {}
 }
 
 // The request message containing the user's name.
@@ -66,3 +72,13 @@ message NotifyMessage{
 }
 
 message Empty {}
+
+// 邮件通知
+message EmailMessage{
+  uint64 accessUserId = 1; // 接收的用户id。 根据用户id获取
+  string toMail = 2;
+  string title = 3;
+  string subTitle = 4;
+  string content = 5;
+  string allowRepeatTimeInterval = 6; // 允许重复通知的时间间隔 单位秒
+}
