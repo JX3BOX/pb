@@ -21,8 +21,6 @@ service JX3Box {
   // send Email to mailbox
   rpc SendEmailToMailbox (EmailMessage) returns (Empty) {}
 
-  // send Email and notify 
-  rpc SendEmailAndNotify (EmailMessage) returns (Empty) {}
 }
 
 // The request message containing the user's name.

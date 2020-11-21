@@ -29,8 +29,6 @@ type JX3BoxClient interface {
 	SendEmailToUserID(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error)
 	// send Email to mailbox
 	SendEmailToMailbox(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error)
-	// send Email and notify
-	SendEmailAndNotify(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type jX3BoxClient struct {
@@ -119,19 +117,6 @@ func (c *jX3BoxClient) SendEmailToMailbox(ctx context.Context, in *EmailMessage,
 	return out, nil
 }
 
-var jX3BoxSendEmailAndNotifyStreamDesc = &grpc.StreamDesc{
-	StreamName: "SendEmailAndNotify",
-}
-
-func (c *jX3BoxClient) SendEmailAndNotify(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/SendEmailAndNotify", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // JX3BoxService is the service API for JX3Box service.
 // Fields should be assigned to their respective handler implementations only before
 // RegisterJX3BoxService is called.  Any unassigned fields will result in the
@@ -149,8 +134,6 @@ type JX3BoxService struct {
 	SendEmailToUserID func(context.Context, *EmailMessage) (*Empty, error)
 	// send Email to mailbox
 	SendEmailToMailbox func(context.Context, *EmailMessage) (*Empty, error)
-	// send Email and notify
-	SendEmailAndNotify func(context.Context, *EmailMessage) (*Empty, error)
 }
 
 func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -255,23 +238,6 @@ func (s *JX3BoxService) sendEmailToMailbox(_ interface{}, ctx context.Context, d
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) sendEmailAndNotify(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmailMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return s.SendEmailAndNotify(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     s,
-		FullMethod: "/jx3box.JX3Box/SendEmailAndNotify",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.SendEmailAndNotify(ctx, req.(*EmailMessage))
-	}
-	return interceptor(ctx, in, info, handler)
-}
 
 // RegisterJX3BoxService registers a service implementation with a gRPC server.
 func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
@@ -306,11 +272,6 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			return nil, status.Errorf(codes.Unimplemented, "method SendEmailToMailbox not implemented")
 		}
 	}
-	if srvCopy.SendEmailAndNotify == nil {
-		srvCopy.SendEmailAndNotify = func(context.Context, *EmailMessage) (*Empty, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method SendEmailAndNotify not implemented")
-		}
-	}
 	sd := grpc.ServiceDesc{
 		ServiceName: "jx3box.JX3Box",
 		Methods: []grpc.MethodDesc{
@@ -337,10 +298,6 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "SendEmailToMailbox",
 				Handler:    srvCopy.sendEmailToMailbox,
-			},
-			{
-				MethodName: "SendEmailAndNotify",
-				Handler:    srvCopy.sendEmailAndNotify,
 			},
 		},
 		Streams:  []grpc.StreamDesc{},
