@@ -81,5 +81,5 @@ message EmailMessage{
   string title = 3;
   string subTitle = 4;
   string content = 5;
-  string allowRepeatTimeInterval = 6; // 允许重复通知的时间间隔 单位秒
+  uint64 allowRepeatTimeInterval = 6; // 允许重复通知的时间间隔 单位秒
 }
