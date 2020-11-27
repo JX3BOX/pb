@@ -62,7 +62,9 @@ message UserAwardParams{
   repeated uint64 uid = 3;
 }
 message UserAwardResult{
-  int64 effect = 1;
+  repeated uint64 successUid = 1;
+  repeated uint64 failureUid = 2;
+  repeated uint64 repeatedUid = 3;
 }
 
 message PostsQueryParams {
