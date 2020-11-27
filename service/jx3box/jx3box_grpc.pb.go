@@ -21,6 +21,8 @@ type JX3BoxClient interface {
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
 	// 用户重命名
 	UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error)
+	// 发放用户荣誉
+	GiveUserAward(ctx context.Context, in *UserAwardParams, opts ...grpc.CallOption) (*UserAwardResult, error)
 	// 获取文章
 	GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error)
 	// 发送一个通知
@@ -59,6 +61,19 @@ var jX3BoxUserRenameStreamDesc = &grpc.StreamDesc{
 func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error) {
 	out := new(UserRenameResult)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/UserRename", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+var jX3BoxGiveUserAwardStreamDesc = &grpc.StreamDesc{
+	StreamName: "GiveUserAward",
+}
+
+func (c *jX3BoxClient) GiveUserAward(ctx context.Context, in *UserAwardParams, opts ...grpc.CallOption) (*UserAwardResult, error) {
+	out := new(UserAwardResult)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GiveUserAward", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,6 +141,8 @@ type JX3BoxService struct {
 	GetUser func(context.Context, *UserQueryParams) (*User, error)
 	// 用户重命名
 	UserRename func(context.Context, *UserRenameParams) (*UserRenameResult, error)
+	// 发放用户荣誉
+	GiveUserAward func(context.Context, *UserAwardParams) (*UserAwardResult, error)
 	// 获取文章
 	GetPosts func(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
 	// 发送一个通知
@@ -167,6 +184,23 @@ func (s *JX3BoxService) userRename(_ interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return s.UserRename(ctx, req.(*UserRenameParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *JX3BoxService) giveUserAward(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserAwardParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.GiveUserAward(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3Box/GiveUserAward",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.GiveUserAward(ctx, req.(*UserAwardParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -252,6 +286,11 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			return nil, status.Errorf(codes.Unimplemented, "method UserRename not implemented")
 		}
 	}
+	if srvCopy.GiveUserAward == nil {
+		srvCopy.GiveUserAward = func(context.Context, *UserAwardParams) (*UserAwardResult, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method GiveUserAward not implemented")
+		}
+	}
 	if srvCopy.GetPosts == nil {
 		srvCopy.GetPosts = func(context.Context, *PostsQueryParams) (*PostsQueryResult, error) {
 			return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
@@ -282,6 +321,10 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "UserRename",
 				Handler:    srvCopy.userRename,
+			},
+			{
+				MethodName: "GiveUserAward",
+				Handler:    srvCopy.giveUserAward,
 			},
 			{
 				MethodName: "GetPosts",

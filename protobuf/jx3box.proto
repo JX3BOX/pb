@@ -9,6 +9,10 @@ service JX3Box {
   rpc GetUser (UserQueryParams) returns (User) {}
   // 用户重命名
   rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
+  
+  // 发放用户荣誉
+  rpc GiveUserAward(UserAwardParams) returns (UserAwardResult) {}
+ 
   // 获取文章
   rpc GetPosts (PostsQueryParams) returns (PostsQueryResult) {}
 
@@ -50,6 +54,15 @@ message UserRenameResult {
   int32 effect =  4; //受影响的条数
   int32 code = 5; //结果是否成功 0　成功,其他失败
   string msg = 6; // 失败原因
+}
+
+message UserAwardParams{
+  string type = 1;
+  string award = 2;
+  repeated int64 uid = 3;
+}
+message UserAwardResult{
+  int64 effect = 1;
 }
 
 message PostsQueryParams {
