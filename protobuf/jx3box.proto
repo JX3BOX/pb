@@ -59,7 +59,7 @@ message UserRenameResult {
 message UserAwardParams{
   string type = 1;
   string award = 2;
-  repeated int64 uid = 3;
+  repeated uint64 uid = 3;
 }
 message UserAwardResult{
   int64 effect = 1;
