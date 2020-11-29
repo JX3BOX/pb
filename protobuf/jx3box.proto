@@ -7,6 +7,8 @@ package jx3box;
 service JX3Box {
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
+  // 批量获取用户
+  rpc GetUserList (GetUserListParams) returns (UserListResult) {}
   // 用户重命名
   rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
   
@@ -31,6 +33,13 @@ service JX3Box {
 message UserQueryParams {
   uint64 uid = 1;
 }
+message GetUserListParams{
+  repeated uint64 uids = 1;
+}
+
+message UserListResult{
+  repeated User list = 1;
+}
 
 
 // The response message containing the greetings
@@ -40,6 +49,7 @@ message User {
   uint64 group = 3;
   string displayName = 4;
   string wechatUnionId = 5;
+  string avatar = 6;
 }
 
 message UserRenameParams {
