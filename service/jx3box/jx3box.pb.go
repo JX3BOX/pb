@@ -397,18 +397,18 @@ func (x *UserRenameResult) GetMsg() string {
 	return ""
 }
 
-type UserAwardParams struct {
+type UserMedalParams struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Type  string   `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	Award string   `protobuf:"bytes,2,opt,name=award,proto3" json:"award,omitempty"`
+	Medal string   `protobuf:"bytes,2,opt,name=medal,proto3" json:"medal,omitempty"`
 	Uid   []uint64 `protobuf:"varint,3,rep,packed,name=uid,proto3" json:"uid,omitempty"`
 }
 
-func (x *UserAwardParams) Reset() {
-	*x = UserAwardParams{}
+func (x *UserMedalParams) Reset() {
+	*x = UserMedalParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_protobuf_jx3box_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -416,13 +416,13 @@ func (x *UserAwardParams) Reset() {
 	}
 }
 
-func (x *UserAwardParams) String() string {
+func (x *UserMedalParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UserAwardParams) ProtoMessage() {}
+func (*UserMedalParams) ProtoMessage() {}
 
-func (x *UserAwardParams) ProtoReflect() protoreflect.Message {
+func (x *UserMedalParams) ProtoReflect() protoreflect.Message {
 	mi := &file_protobuf_jx3box_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -434,33 +434,33 @@ func (x *UserAwardParams) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UserAwardParams.ProtoReflect.Descriptor instead.
-func (*UserAwardParams) Descriptor() ([]byte, []int) {
+// Deprecated: Use UserMedalParams.ProtoReflect.Descriptor instead.
+func (*UserMedalParams) Descriptor() ([]byte, []int) {
 	return file_protobuf_jx3box_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *UserAwardParams) GetType() string {
+func (x *UserMedalParams) GetType() string {
 	if x != nil {
 		return x.Type
 	}
 	return ""
 }
 
-func (x *UserAwardParams) GetAward() string {
+func (x *UserMedalParams) GetMedal() string {
 	if x != nil {
-		return x.Award
+		return x.Medal
 	}
 	return ""
 }
 
-func (x *UserAwardParams) GetUid() []uint64 {
+func (x *UserMedalParams) GetUid() []uint64 {
 	if x != nil {
 		return x.Uid
 	}
 	return nil
 }
 
-type UserAwardResult struct {
+type UserMedalResult struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -471,8 +471,8 @@ type UserAwardResult struct {
 	Effect      int64    `protobuf:"varint,4,opt,name=effect,proto3" json:"effect,omitempty"`
 }
 
-func (x *UserAwardResult) Reset() {
-	*x = UserAwardResult{}
+func (x *UserMedalResult) Reset() {
+	*x = UserMedalResult{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_protobuf_jx3box_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -480,13 +480,13 @@ func (x *UserAwardResult) Reset() {
 	}
 }
 
-func (x *UserAwardResult) String() string {
+func (x *UserMedalResult) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*UserAwardResult) ProtoMessage() {}
+func (*UserMedalResult) ProtoMessage() {}
 
-func (x *UserAwardResult) ProtoReflect() protoreflect.Message {
+func (x *UserMedalResult) ProtoReflect() protoreflect.Message {
 	mi := &file_protobuf_jx3box_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -498,33 +498,33 @@ func (x *UserAwardResult) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use UserAwardResult.ProtoReflect.Descriptor instead.
-func (*UserAwardResult) Descriptor() ([]byte, []int) {
+// Deprecated: Use UserMedalResult.ProtoReflect.Descriptor instead.
+func (*UserMedalResult) Descriptor() ([]byte, []int) {
 	return file_protobuf_jx3box_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *UserAwardResult) GetSuccessUid() []uint64 {
+func (x *UserMedalResult) GetSuccessUid() []uint64 {
 	if x != nil {
 		return x.SuccessUid
 	}
 	return nil
 }
 
-func (x *UserAwardResult) GetFailureUid() []uint64 {
+func (x *UserMedalResult) GetFailureUid() []uint64 {
 	if x != nil {
 		return x.FailureUid
 	}
 	return nil
 }
 
-func (x *UserAwardResult) GetRepeatedUid() []uint64 {
+func (x *UserMedalResult) GetRepeatedUid() []uint64 {
 	if x != nil {
 		return x.RepeatedUid
 	}
 	return nil
 }
 
-func (x *UserAwardResult) GetEffect() int64 {
+func (x *UserMedalResult) GetEffect() int64 {
 	if x != nil {
 		return x.Effect
 	}
@@ -893,12 +893,12 @@ var file_protobuf_jx3box_proto_rawDesc = []byte{
 	0x66, 0x66, 0x65, 0x63, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x05, 0x20,
 	0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x6d, 0x73, 0x67,
 	0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6d, 0x73, 0x67, 0x22, 0x4d, 0x0a, 0x0f, 0x55,
-	0x73, 0x65, 0x72, 0x41, 0x77, 0x61, 0x72, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x12,
+	0x73, 0x65, 0x72, 0x4d, 0x65, 0x64, 0x61, 0x6c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x12,
 	0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79,
-	0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x61, 0x77, 0x61, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x05, 0x61, 0x77, 0x61, 0x72, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x69, 0x64, 0x18,
+	0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x6d, 0x65, 0x64, 0x61, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x05, 0x6d, 0x65, 0x64, 0x61, 0x6c, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x69, 0x64, 0x18,
 	0x03, 0x20, 0x03, 0x28, 0x04, 0x52, 0x03, 0x75, 0x69, 0x64, 0x22, 0x8b, 0x01, 0x0a, 0x0f, 0x55,
-	0x73, 0x65, 0x72, 0x41, 0x77, 0x61, 0x72, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x1e,
+	0x73, 0x65, 0x72, 0x4d, 0x65, 0x64, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x1e,
 	0x0a, 0x0a, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x55, 0x69, 0x64, 0x18, 0x01, 0x20, 0x03,
 	0x28, 0x04, 0x52, 0x0a, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x55, 0x69, 0x64, 0x12, 0x1e,
 	0x0a, 0x0a, 0x66, 0x61, 0x69, 0x6c, 0x75, 0x72, 0x65, 0x55, 0x69, 0x64, 0x18, 0x02, 0x20, 0x03,
@@ -954,10 +954,10 @@ var file_protobuf_jx3box_proto_rawDesc = []byte{
 	0x61, 0x6d, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x18, 0x2e, 0x6a, 0x78, 0x33, 0x62,
 	0x6f, 0x78, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x52, 0x65, 0x73,
 	0x75, 0x6c, 0x74, 0x22, 0x00, 0x12, 0x43, 0x0a, 0x0d, 0x47, 0x69, 0x76, 0x65, 0x55, 0x73, 0x65,
-	0x72, 0x41, 0x77, 0x61, 0x72, 0x64, 0x12, 0x17, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e,
-	0x55, 0x73, 0x65, 0x72, 0x41, 0x77, 0x61, 0x72, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a,
-	0x17, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x41, 0x77, 0x61,
-	0x72, 0x64, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x00, 0x12, 0x40, 0x0a, 0x08, 0x47, 0x65,
+	0x72, 0x4d, 0x65, 0x64, 0x61, 0x6c, 0x12, 0x17, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e,
+	0x55, 0x73, 0x65, 0x72, 0x4d, 0x65, 0x64, 0x61, 0x6c, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a,
+	0x17, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x4d, 0x65, 0x64,
+	0x61, 0x6c, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x22, 0x00, 0x12, 0x40, 0x0a, 0x08, 0x47, 0x65,
 	0x74, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x12, 0x18, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e,
 	0x50, 0x6f, 0x73, 0x74, 0x73, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
 	0x1a, 0x18, 0x2e, 0x6a, 0x78, 0x33, 0x62, 0x6f, 0x78, 0x2e, 0x50, 0x6f, 0x73, 0x74, 0x73, 0x51,
@@ -997,8 +997,8 @@ var file_protobuf_jx3box_proto_goTypes = []interface{}{
 	(*User)(nil),              // 3: jx3box.User
 	(*UserRenameParams)(nil),  // 4: jx3box.UserRenameParams
 	(*UserRenameResult)(nil),  // 5: jx3box.UserRenameResult
-	(*UserAwardParams)(nil),   // 6: jx3box.UserAwardParams
-	(*UserAwardResult)(nil),   // 7: jx3box.UserAwardResult
+	(*UserMedalParams)(nil),   // 6: jx3box.UserMedalParams
+	(*UserMedalResult)(nil),   // 7: jx3box.UserMedalResult
 	(*PostsQueryParams)(nil),  // 8: jx3box.PostsQueryParams
 	(*PostsQueryResult)(nil),  // 9: jx3box.PostsQueryResult
 	(*NotifyMessage)(nil),     // 10: jx3box.NotifyMessage
@@ -1010,7 +1010,7 @@ var file_protobuf_jx3box_proto_depIdxs = []int32{
 	0,  // 1: jx3box.JX3Box.GetUser:input_type -> jx3box.UserQueryParams
 	1,  // 2: jx3box.JX3Box.GetUserList:input_type -> jx3box.GetUserListParams
 	4,  // 3: jx3box.JX3Box.UserRename:input_type -> jx3box.UserRenameParams
-	6,  // 4: jx3box.JX3Box.GiveUserAward:input_type -> jx3box.UserAwardParams
+	6,  // 4: jx3box.JX3Box.GiveUserMedal:input_type -> jx3box.UserMedalParams
 	8,  // 5: jx3box.JX3Box.GetPosts:input_type -> jx3box.PostsQueryParams
 	10, // 6: jx3box.JX3Box.SendNotify:input_type -> jx3box.NotifyMessage
 	12, // 7: jx3box.JX3Box.SendEmailToUserID:input_type -> jx3box.EmailMessage
@@ -1018,7 +1018,7 @@ var file_protobuf_jx3box_proto_depIdxs = []int32{
 	3,  // 9: jx3box.JX3Box.GetUser:output_type -> jx3box.User
 	2,  // 10: jx3box.JX3Box.GetUserList:output_type -> jx3box.UserListResult
 	5,  // 11: jx3box.JX3Box.UserRename:output_type -> jx3box.UserRenameResult
-	7,  // 12: jx3box.JX3Box.GiveUserAward:output_type -> jx3box.UserAwardResult
+	7,  // 12: jx3box.JX3Box.GiveUserMedal:output_type -> jx3box.UserMedalResult
 	9,  // 13: jx3box.JX3Box.GetPosts:output_type -> jx3box.PostsQueryResult
 	11, // 14: jx3box.JX3Box.SendNotify:output_type -> jx3box.Empty
 	11, // 15: jx3box.JX3Box.SendEmailToUserID:output_type -> jx3box.Empty
@@ -1109,7 +1109,7 @@ func file_protobuf_jx3box_proto_init() {
 			}
 		}
 		file_protobuf_jx3box_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserAwardParams); i {
+			switch v := v.(*UserMedalParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1121,7 +1121,7 @@ func file_protobuf_jx3box_proto_init() {
 			}
 		}
 		file_protobuf_jx3box_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*UserAwardResult); i {
+			switch v := v.(*UserMedalResult); i {
 			case 0:
 				return &v.state
 			case 1:

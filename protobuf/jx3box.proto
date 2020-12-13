@@ -13,7 +13,7 @@ service JX3Box {
   rpc UserRename (UserRenameParams) returns (UserRenameResult) {}
   
   // 发放用户荣誉
-  rpc GiveUserAward(UserAwardParams) returns (UserAwardResult) {}
+  rpc GiveUserMedal(UserMedalParams) returns (UserMedalResult) {}
  
   // 获取文章
   rpc GetPosts (PostsQueryParams) returns (PostsQueryResult) {}
@@ -66,12 +66,12 @@ message UserRenameResult {
   string msg = 6; // 失败原因
 }
 
-message UserAwardParams{
+message UserMedalParams{
   string type = 1;
-  string award = 2;
+  string medal = 2;
   repeated uint64 uid = 3;
 }
-message UserAwardResult{
+message UserMedalResult{
   repeated uint64 successUid = 1;
   repeated uint64 failureUid = 2;
   repeated uint64 repeatedUid = 3;
