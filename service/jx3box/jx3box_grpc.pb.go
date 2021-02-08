@@ -19,6 +19,8 @@ const _ = grpc.SupportPackageIsVersion7
 type JX3BoxClient interface {
 	// 获取用户
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
+	// 获取vip用户信息
+	GetVip(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*Vip, error)
 	// 批量获取用户
 	GetUserList(ctx context.Context, in *GetUserListParams, opts ...grpc.CallOption) (*UserListResult, error)
 	// 用户重命名
@@ -50,6 +52,19 @@ var jX3BoxGetUserStreamDesc = &grpc.StreamDesc{
 func (c *jX3BoxClient) GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+var jX3BoxGetVipStreamDesc = &grpc.StreamDesc{
+	StreamName: "GetVip",
+}
+
+func (c *jX3BoxClient) GetVip(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*Vip, error) {
+	out := new(Vip)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetVip", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -154,6 +169,8 @@ func (c *jX3BoxClient) SendEmailToMailbox(ctx context.Context, in *EmailMessage,
 type JX3BoxService struct {
 	// 获取用户
 	GetUser func(context.Context, *UserQueryParams) (*User, error)
+	// 获取vip用户信息
+	GetVip func(context.Context, *UserQueryParams) (*Vip, error)
 	// 批量获取用户
 	GetUserList func(context.Context, *GetUserListParams) (*UserListResult, error)
 	// 用户重命名
@@ -184,6 +201,23 @@ func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return s.GetUser(ctx, req.(*UserQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+func (s *JX3BoxService) getVip(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserQueryParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return s.GetVip(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     s,
+		FullMethod: "/jx3box.JX3Box/GetVip",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return s.GetVip(ctx, req.(*UserQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -315,6 +349,11 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 		}
 	}
+	if srvCopy.GetVip == nil {
+		srvCopy.GetVip = func(context.Context, *UserQueryParams) (*Vip, error) {
+			return nil, status.Errorf(codes.Unimplemented, "method GetVip not implemented")
+		}
+	}
 	if srvCopy.GetUserList == nil {
 		srvCopy.GetUserList = func(context.Context, *GetUserListParams) (*UserListResult, error) {
 			return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
@@ -356,6 +395,10 @@ func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
 			{
 				MethodName: "GetUser",
 				Handler:    srvCopy.getUser,
+			},
+			{
+				MethodName: "GetVip",
+				Handler:    srvCopy.getVip,
 			},
 			{
 				MethodName: "GetUserList",

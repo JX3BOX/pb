@@ -1,5 +1,6 @@
 syntax = "proto3";
 // jx3box 微服务
+import "google/protobuf/timestamp.proto";
 
 option go_package = "service/jx3box";
 package jx3box;
@@ -7,6 +8,10 @@ package jx3box;
 service JX3Box {
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
+
+  // 获取vip用户信息
+  rpc GetVip(UserQueryParams) returns (Vip){}
+
   // 批量获取用户
   rpc GetUserList (GetUserListParams) returns (UserListResult) {}
   // 用户重命名
@@ -50,6 +55,15 @@ message User {
   string displayName = 4;
   string wechatUnionId = 5;
   string avatar = 6;
+}
+
+message Vip{
+  uint64 userId = 1;
+  google.protobuf.Timestamp expireDate = 2;
+  int32 wasVip = 3;
+  int32 boxCoin = 4;
+  int32 potins = 5;
+  int32 redpacket = 6;
 }
 
 message UserRenameParams {
