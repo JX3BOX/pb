@@ -64,6 +64,8 @@ message Vip{
   int32 boxCoin = 4;
   int32 potins = 5;
   int32 redpacket = 6;
+  int32 wasPro = 7;
+  google.protobuf.Timestamp proExpireDate = 8;
 }
 
 message UserRenameParams {
