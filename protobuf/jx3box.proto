@@ -6,6 +6,7 @@ option go_package = "service/jx3box";
 package jx3box;
 
 service JX3Box {
+  rpc GetVersion(VersionParams) returns (Version) {}
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
 
@@ -32,6 +33,13 @@ service JX3Box {
   // send Email to mailbox
   rpc SendEmailToMailbox (EmailMessage) returns (Empty) {}
 
+}
+
+message VersionParams {}
+
+message Version {
+  string v = 1; // 当前rpc版本
+  string t = 2; // 当前rpc的编译时间
 }
 
 // The request message containing the user's name.

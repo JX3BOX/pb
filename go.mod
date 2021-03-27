@@ -1,9 +1,9 @@
 module github.com/JX3BOX/pb
 
-go 1.15
+go 1.16
 
 require (
-	github.com/golang/protobuf v1.4.2
-	google.golang.org/grpc v1.32.0
-	google.golang.org/protobuf v1.23.0
+	github.com/golang/protobuf v1.5.1
+	google.golang.org/grpc v1.36.1
+	google.golang.org/protobuf v1.26.0
 )

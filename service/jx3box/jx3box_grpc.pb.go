@@ -11,12 +11,14 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // JX3BoxClient is the client API for JX3Box service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JX3BoxClient interface {
+	GetVersion(ctx context.Context, in *VersionParams, opts ...grpc.CallOption) (*Version, error)
 	// 获取用户
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
 	// 获取vip用户信息
@@ -45,8 +47,13 @@ func NewJX3BoxClient(cc grpc.ClientConnInterface) JX3BoxClient {
 	return &jX3BoxClient{cc}
 }
 
-var jX3BoxGetUserStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetUser",
+func (c *jX3BoxClient) GetVersion(ctx context.Context, in *VersionParams, opts ...grpc.CallOption) (*Version, error) {
+	out := new(Version)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetVersion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *jX3BoxClient) GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error) {
@@ -58,10 +65,6 @@ func (c *jX3BoxClient) GetUser(ctx context.Context, in *UserQueryParams, opts ..
 	return out, nil
 }
 
-var jX3BoxGetVipStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetVip",
-}
-
 func (c *jX3BoxClient) GetVip(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*Vip, error) {
 	out := new(Vip)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetVip", in, out, opts...)
@@ -69,10 +72,6 @@ func (c *jX3BoxClient) GetVip(ctx context.Context, in *UserQueryParams, opts ...
 		return nil, err
 	}
 	return out, nil
-}
-
-var jX3BoxGetUserListStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetUserList",
 }
 
 func (c *jX3BoxClient) GetUserList(ctx context.Context, in *GetUserListParams, opts ...grpc.CallOption) (*UserListResult, error) {
@@ -84,10 +83,6 @@ func (c *jX3BoxClient) GetUserList(ctx context.Context, in *GetUserListParams, o
 	return out, nil
 }
 
-var jX3BoxUserRenameStreamDesc = &grpc.StreamDesc{
-	StreamName: "UserRename",
-}
-
 func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opts ...grpc.CallOption) (*UserRenameResult, error) {
 	out := new(UserRenameResult)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/UserRename", in, out, opts...)
@@ -95,10 +90,6 @@ func (c *jX3BoxClient) UserRename(ctx context.Context, in *UserRenameParams, opt
 		return nil, err
 	}
 	return out, nil
-}
-
-var jX3BoxGiveUserMedalStreamDesc = &grpc.StreamDesc{
-	StreamName: "GiveUserMedal",
 }
 
 func (c *jX3BoxClient) GiveUserMedal(ctx context.Context, in *UserMedalParams, opts ...grpc.CallOption) (*UserMedalResult, error) {
@@ -110,10 +101,6 @@ func (c *jX3BoxClient) GiveUserMedal(ctx context.Context, in *UserMedalParams, o
 	return out, nil
 }
 
-var jX3BoxGetPostsStreamDesc = &grpc.StreamDesc{
-	StreamName: "GetPosts",
-}
-
 func (c *jX3BoxClient) GetPosts(ctx context.Context, in *PostsQueryParams, opts ...grpc.CallOption) (*PostsQueryResult, error) {
 	out := new(PostsQueryResult)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetPosts", in, out, opts...)
@@ -121,10 +108,6 @@ func (c *jX3BoxClient) GetPosts(ctx context.Context, in *PostsQueryParams, opts 
 		return nil, err
 	}
 	return out, nil
-}
-
-var jX3BoxSendNotifyStreamDesc = &grpc.StreamDesc{
-	StreamName: "SendNotify",
 }
 
 func (c *jX3BoxClient) SendNotify(ctx context.Context, in *NotifyMessage, opts ...grpc.CallOption) (*Empty, error) {
@@ -136,10 +119,6 @@ func (c *jX3BoxClient) SendNotify(ctx context.Context, in *NotifyMessage, opts .
 	return out, nil
 }
 
-var jX3BoxSendEmailToUserIDStreamDesc = &grpc.StreamDesc{
-	StreamName: "SendEmailToUserID",
-}
-
 func (c *jX3BoxClient) SendEmailToUserID(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/SendEmailToUserID", in, out, opts...)
@@ -147,10 +126,6 @@ func (c *jX3BoxClient) SendEmailToUserID(ctx context.Context, in *EmailMessage, 
 		return nil, err
 	}
 	return out, nil
-}
-
-var jX3BoxSendEmailToMailboxStreamDesc = &grpc.StreamDesc{
-	StreamName: "SendEmailToMailbox",
 }
 
 func (c *jX3BoxClient) SendEmailToMailbox(ctx context.Context, in *EmailMessage, opts ...grpc.CallOption) (*Empty, error) {
@@ -162,276 +137,307 @@ func (c *jX3BoxClient) SendEmailToMailbox(ctx context.Context, in *EmailMessage,
 	return out, nil
 }
 
-// JX3BoxService is the service API for JX3Box service.
-// Fields should be assigned to their respective handler implementations only before
-// RegisterJX3BoxService is called.  Any unassigned fields will result in the
-// handler for that method returning an Unimplemented error.
-type JX3BoxService struct {
+// JX3BoxServer is the server API for JX3Box service.
+// All implementations must embed UnimplementedJX3BoxServer
+// for forward compatibility
+type JX3BoxServer interface {
+	GetVersion(context.Context, *VersionParams) (*Version, error)
 	// 获取用户
-	GetUser func(context.Context, *UserQueryParams) (*User, error)
+	GetUser(context.Context, *UserQueryParams) (*User, error)
 	// 获取vip用户信息
-	GetVip func(context.Context, *UserQueryParams) (*Vip, error)
+	GetVip(context.Context, *UserQueryParams) (*Vip, error)
 	// 批量获取用户
-	GetUserList func(context.Context, *GetUserListParams) (*UserListResult, error)
+	GetUserList(context.Context, *GetUserListParams) (*UserListResult, error)
 	// 用户重命名
-	UserRename func(context.Context, *UserRenameParams) (*UserRenameResult, error)
+	UserRename(context.Context, *UserRenameParams) (*UserRenameResult, error)
 	// 发放用户荣誉
-	GiveUserMedal func(context.Context, *UserMedalParams) (*UserMedalResult, error)
+	GiveUserMedal(context.Context, *UserMedalParams) (*UserMedalResult, error)
 	// 获取文章
-	GetPosts func(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
+	GetPosts(context.Context, *PostsQueryParams) (*PostsQueryResult, error)
 	// 发送一个通知
-	SendNotify func(context.Context, *NotifyMessage) (*Empty, error)
+	SendNotify(context.Context, *NotifyMessage) (*Empty, error)
 	// Send Email To UserID
-	SendEmailToUserID func(context.Context, *EmailMessage) (*Empty, error)
+	SendEmailToUserID(context.Context, *EmailMessage) (*Empty, error)
 	// send Email to mailbox
-	SendEmailToMailbox func(context.Context, *EmailMessage) (*Empty, error)
+	SendEmailToMailbox(context.Context, *EmailMessage) (*Empty, error)
+	mustEmbedUnimplementedJX3BoxServer()
 }
 
-func (s *JX3BoxService) getUser(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+// UnimplementedJX3BoxServer must be embedded to have forward compatible implementations.
+type UnimplementedJX3BoxServer struct {
+}
+
+func (UnimplementedJX3BoxServer) GetVersion(context.Context, *VersionParams) (*Version, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVersion not implemented")
+}
+func (UnimplementedJX3BoxServer) GetUser(context.Context, *UserQueryParams) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedJX3BoxServer) GetVip(context.Context, *UserQueryParams) (*Vip, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVip not implemented")
+}
+func (UnimplementedJX3BoxServer) GetUserList(context.Context, *GetUserListParams) (*UserListResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
+}
+func (UnimplementedJX3BoxServer) UserRename(context.Context, *UserRenameParams) (*UserRenameResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRename not implemented")
+}
+func (UnimplementedJX3BoxServer) GiveUserMedal(context.Context, *UserMedalParams) (*UserMedalResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GiveUserMedal not implemented")
+}
+func (UnimplementedJX3BoxServer) GetPosts(context.Context, *PostsQueryParams) (*PostsQueryResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
+}
+func (UnimplementedJX3BoxServer) SendNotify(context.Context, *NotifyMessage) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendNotify not implemented")
+}
+func (UnimplementedJX3BoxServer) SendEmailToUserID(context.Context, *EmailMessage) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendEmailToUserID not implemented")
+}
+func (UnimplementedJX3BoxServer) SendEmailToMailbox(context.Context, *EmailMessage) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendEmailToMailbox not implemented")
+}
+func (UnimplementedJX3BoxServer) mustEmbedUnimplementedJX3BoxServer() {}
+
+// UnsafeJX3BoxServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to JX3BoxServer will
+// result in compilation errors.
+type UnsafeJX3BoxServer interface {
+	mustEmbedUnimplementedJX3BoxServer()
+}
+
+func RegisterJX3BoxServer(s grpc.ServiceRegistrar, srv JX3BoxServer) {
+	s.RegisterService(&JX3Box_ServiceDesc, srv)
+}
+
+func _JX3Box_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VersionParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JX3BoxServer).GetVersion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jx3box.JX3Box/GetVersion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JX3BoxServer).GetVersion(ctx, req.(*VersionParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JX3Box_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserQueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.GetUser(ctx, in)
+		return srv.(JX3BoxServer).GetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetUser(ctx, req.(*UserQueryParams))
+		return srv.(JX3BoxServer).GetUser(ctx, req.(*UserQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) getVip(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_GetVip_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserQueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.GetVip(ctx, in)
+		return srv.(JX3BoxServer).GetVip(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/GetVip",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetVip(ctx, req.(*UserQueryParams))
+		return srv.(JX3BoxServer).GetVip(ctx, req.(*UserQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) getUserList(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserListParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.GetUserList(ctx, in)
+		return srv.(JX3BoxServer).GetUserList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/GetUserList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetUserList(ctx, req.(*GetUserListParams))
+		return srv.(JX3BoxServer).GetUserList(ctx, req.(*GetUserListParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) userRename(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_UserRename_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserRenameParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.UserRename(ctx, in)
+		return srv.(JX3BoxServer).UserRename(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/UserRename",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.UserRename(ctx, req.(*UserRenameParams))
+		return srv.(JX3BoxServer).UserRename(ctx, req.(*UserRenameParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) giveUserMedal(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_GiveUserMedal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserMedalParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.GiveUserMedal(ctx, in)
+		return srv.(JX3BoxServer).GiveUserMedal(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/GiveUserMedal",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GiveUserMedal(ctx, req.(*UserMedalParams))
+		return srv.(JX3BoxServer).GiveUserMedal(ctx, req.(*UserMedalParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) getPosts(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_GetPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PostsQueryParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.GetPosts(ctx, in)
+		return srv.(JX3BoxServer).GetPosts(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/GetPosts",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.GetPosts(ctx, req.(*PostsQueryParams))
+		return srv.(JX3BoxServer).GetPosts(ctx, req.(*PostsQueryParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) sendNotify(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_SendNotify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NotifyMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.SendNotify(ctx, in)
+		return srv.(JX3BoxServer).SendNotify(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/SendNotify",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.SendNotify(ctx, req.(*NotifyMessage))
+		return srv.(JX3BoxServer).SendNotify(ctx, req.(*NotifyMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) sendEmailToUserID(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_SendEmailToUserID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmailMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.SendEmailToUserID(ctx, in)
+		return srv.(JX3BoxServer).SendEmailToUserID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/SendEmailToUserID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.SendEmailToUserID(ctx, req.(*EmailMessage))
+		return srv.(JX3BoxServer).SendEmailToUserID(ctx, req.(*EmailMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
-func (s *JX3BoxService) sendEmailToMailbox(_ interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+
+func _JX3Box_SendEmailToMailbox_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(EmailMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return s.SendEmailToMailbox(ctx, in)
+		return srv.(JX3BoxServer).SendEmailToMailbox(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
-		Server:     s,
+		Server:     srv,
 		FullMethod: "/jx3box.JX3Box/SendEmailToMailbox",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return s.SendEmailToMailbox(ctx, req.(*EmailMessage))
+		return srv.(JX3BoxServer).SendEmailToMailbox(ctx, req.(*EmailMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// RegisterJX3BoxService registers a service implementation with a gRPC server.
-func RegisterJX3BoxService(s grpc.ServiceRegistrar, srv *JX3BoxService) {
-	srvCopy := *srv
-	if srvCopy.GetUser == nil {
-		srvCopy.GetUser = func(context.Context, *UserQueryParams) (*User, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
-		}
-	}
-	if srvCopy.GetVip == nil {
-		srvCopy.GetVip = func(context.Context, *UserQueryParams) (*Vip, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetVip not implemented")
-		}
-	}
-	if srvCopy.GetUserList == nil {
-		srvCopy.GetUserList = func(context.Context, *GetUserListParams) (*UserListResult, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
-		}
-	}
-	if srvCopy.UserRename == nil {
-		srvCopy.UserRename = func(context.Context, *UserRenameParams) (*UserRenameResult, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method UserRename not implemented")
-		}
-	}
-	if srvCopy.GiveUserMedal == nil {
-		srvCopy.GiveUserMedal = func(context.Context, *UserMedalParams) (*UserMedalResult, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GiveUserMedal not implemented")
-		}
-	}
-	if srvCopy.GetPosts == nil {
-		srvCopy.GetPosts = func(context.Context, *PostsQueryParams) (*PostsQueryResult, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
-		}
-	}
-	if srvCopy.SendNotify == nil {
-		srvCopy.SendNotify = func(context.Context, *NotifyMessage) (*Empty, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method SendNotify not implemented")
-		}
-	}
-	if srvCopy.SendEmailToUserID == nil {
-		srvCopy.SendEmailToUserID = func(context.Context, *EmailMessage) (*Empty, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method SendEmailToUserID not implemented")
-		}
-	}
-	if srvCopy.SendEmailToMailbox == nil {
-		srvCopy.SendEmailToMailbox = func(context.Context, *EmailMessage) (*Empty, error) {
-			return nil, status.Errorf(codes.Unimplemented, "method SendEmailToMailbox not implemented")
-		}
-	}
-	sd := grpc.ServiceDesc{
-		ServiceName: "jx3box.JX3Box",
-		Methods: []grpc.MethodDesc{
-			{
-				MethodName: "GetUser",
-				Handler:    srvCopy.getUser,
-			},
-			{
-				MethodName: "GetVip",
-				Handler:    srvCopy.getVip,
-			},
-			{
-				MethodName: "GetUserList",
-				Handler:    srvCopy.getUserList,
-			},
-			{
-				MethodName: "UserRename",
-				Handler:    srvCopy.userRename,
-			},
-			{
-				MethodName: "GiveUserMedal",
-				Handler:    srvCopy.giveUserMedal,
-			},
-			{
-				MethodName: "GetPosts",
-				Handler:    srvCopy.getPosts,
-			},
-			{
-				MethodName: "SendNotify",
-				Handler:    srvCopy.sendNotify,
-			},
-			{
-				MethodName: "SendEmailToUserID",
-				Handler:    srvCopy.sendEmailToUserID,
-			},
-			{
-				MethodName: "SendEmailToMailbox",
-				Handler:    srvCopy.sendEmailToMailbox,
-			},
+// JX3Box_ServiceDesc is the grpc.ServiceDesc for JX3Box service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var JX3Box_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "jx3box.JX3Box",
+	HandlerType: (*JX3BoxServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetVersion",
+			Handler:    _JX3Box_GetVersion_Handler,
 		},
-		Streams:  []grpc.StreamDesc{},
-		Metadata: "protobuf/jx3box.proto",
-	}
-
-	s.RegisterService(&sd, nil)
+		{
+			MethodName: "GetUser",
+			Handler:    _JX3Box_GetUser_Handler,
+		},
+		{
+			MethodName: "GetVip",
+			Handler:    _JX3Box_GetVip_Handler,
+		},
+		{
+			MethodName: "GetUserList",
+			Handler:    _JX3Box_GetUserList_Handler,
+		},
+		{
+			MethodName: "UserRename",
+			Handler:    _JX3Box_UserRename_Handler,
+		},
+		{
+			MethodName: "GiveUserMedal",
+			Handler:    _JX3Box_GiveUserMedal_Handler,
+		},
+		{
+			MethodName: "GetPosts",
+			Handler:    _JX3Box_GetPosts_Handler,
+		},
+		{
+			MethodName: "SendNotify",
+			Handler:    _JX3Box_SendNotify_Handler,
+		},
+		{
+			MethodName: "SendEmailToUserID",
+			Handler:    _JX3Box_SendEmailToUserID_Handler,
+		},
+		{
+			MethodName: "SendEmailToMailbox",
+			Handler:    _JX3Box_SendEmailToMailbox_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "protobuf/jx3box.proto",
 }
