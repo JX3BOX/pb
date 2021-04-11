@@ -120,6 +120,7 @@ message NotifyMessage{
   string type = 4;
   string subtype = 5;
   string content = 6;
+  repeated uint64 accessGroupId = 7;
 }
 
 message Empty {}
@@ -132,4 +133,5 @@ message EmailMessage{
   string subTitle = 4;
   string content = 5;
   uint64 allowRepeatTimeInterval = 6; // 允许重复通知的时间间隔 单位秒
+  repeated uint64 accessGroupId = 7;
 }
