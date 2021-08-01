@@ -21,6 +21,8 @@ type JX3BoxClient interface {
 	GetVersion(ctx context.Context, in *VersionParams, opts ...grpc.CallOption) (*Version, error)
 	// 获取用户
 	GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error)
+	// 获取当日生日的用户
+	GetBirthDayUser(ctx context.Context, in *GetBirthDayUserListParams, opts ...grpc.CallOption) (*UserListResult, error)
 	// 获取vip用户信息
 	GetVip(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*Vip, error)
 	// 批量获取用户
@@ -59,6 +61,15 @@ func (c *jX3BoxClient) GetVersion(ctx context.Context, in *VersionParams, opts .
 func (c *jX3BoxClient) GetUser(ctx context.Context, in *UserQueryParams, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *jX3BoxClient) GetBirthDayUser(ctx context.Context, in *GetBirthDayUserListParams, opts ...grpc.CallOption) (*UserListResult, error) {
+	out := new(UserListResult)
+	err := c.cc.Invoke(ctx, "/jx3box.JX3Box/GetBirthDayUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -144,6 +155,8 @@ type JX3BoxServer interface {
 	GetVersion(context.Context, *VersionParams) (*Version, error)
 	// 获取用户
 	GetUser(context.Context, *UserQueryParams) (*User, error)
+	// 获取当日生日的用户
+	GetBirthDayUser(context.Context, *GetBirthDayUserListParams) (*UserListResult, error)
 	// 获取vip用户信息
 	GetVip(context.Context, *UserQueryParams) (*Vip, error)
 	// 批量获取用户
@@ -172,6 +185,9 @@ func (UnimplementedJX3BoxServer) GetVersion(context.Context, *VersionParams) (*V
 }
 func (UnimplementedJX3BoxServer) GetUser(context.Context, *UserQueryParams) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedJX3BoxServer) GetBirthDayUser(context.Context, *GetBirthDayUserListParams) (*UserListResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBirthDayUser not implemented")
 }
 func (UnimplementedJX3BoxServer) GetVip(context.Context, *UserQueryParams) (*Vip, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVip not implemented")
@@ -242,6 +258,24 @@ func _JX3Box_GetUser_Handler(srv interface{}, ctx context.Context, dec func(inte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(JX3BoxServer).GetUser(ctx, req.(*UserQueryParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JX3Box_GetBirthDayUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBirthDayUserListParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JX3BoxServer).GetBirthDayUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/jx3box.JX3Box/GetBirthDayUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JX3BoxServer).GetBirthDayUser(ctx, req.(*GetBirthDayUserListParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -404,6 +438,10 @@ var JX3Box_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _JX3Box_GetUser_Handler,
+		},
+		{
+			MethodName: "GetBirthDayUser",
+			Handler:    _JX3Box_GetBirthDayUser_Handler,
 		},
 		{
 			MethodName: "GetVip",

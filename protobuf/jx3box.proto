@@ -9,6 +9,8 @@ service JX3Box {
   rpc GetVersion(VersionParams) returns (Version) {}
   // 获取用户
   rpc GetUser (UserQueryParams) returns (User) {}
+  // 获取当日生日的用户
+  rpc GetBirthDayUser (GetBirthDayUserListParams) returns (UserListResult) {}
 
   // 获取vip用户信息
   rpc GetVip(UserQueryParams) returns (Vip){}
@@ -49,6 +51,11 @@ message UserQueryParams {
 message GetUserListParams{
   repeated uint64 uids = 1;
 }
+message GetBirthDayUserListParams{
+  repeated uint64 uids = 1;
+  string brithday = 2;
+}
+
 
 message UserListResult{
   repeated User list = 1;
