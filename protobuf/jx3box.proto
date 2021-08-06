@@ -117,6 +117,10 @@ message PostsQueryParams {
 message PostsQueryResult{
   uint64 authorId = 1;
   string authorName = 2;
+  string postStatus = 3;
+  string postTitle = 4;
+  string postType = 5;
+  string postSubtype = 6;
 }
 
 // 消息通知
