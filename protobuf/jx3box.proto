@@ -133,6 +133,7 @@ message NotifyMessage{
   string content = 6;
   uint64 accessGroupId = 7;// 用户组
   repeated uint64 accessUserListId = 8; //用户id列表
+  string sourceIdRaw = 9;
 }
 
 message Empty {}
