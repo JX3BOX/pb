@@ -148,4 +148,5 @@ message EmailMessage{
   uint64 allowRepeatTimeInterval = 6; // 允许重复通知的时间间隔 单位秒
   uint64 accessGroupId = 7; // 用户组
   repeated uint64 accessUserListId = 8; //用户id列表
+  string contentType = 9; //邮件类型
 }
